@@ -58,6 +58,7 @@ class Data_Handler:
                 return "Failed to add to Plex"
         except Exception as e:
             logger.error(f"Error importing M3U playlist '{self.playlist_file}'")
+            logger.warning(f"Path for M3U playlist: {m3u_path}")
             logger.error(f"Plex Playlist Addition Failed: {str(e)}")
             return "Error adding to Plex"
 
