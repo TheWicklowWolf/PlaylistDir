@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='logo.png')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"
+    integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <title>PlaylistDir</title>
+</head>
+
+<body class="bg-secondary-subtle">
+  <div class="container-fluid bg-dark">
+    <div class="top-bar d-flex justify-content-between align-items-center">
+      <img id="logo" src="{{url_for('static',filename='logo.png')}}" alt="logo">
+      <h1 class="title text-center text-light flex-grow-1">PlaylistDir</h1>
+      <button class="btn btn-link text-light" id="settings-button" data-bs-toggle="modal"
+        data-bs-target="#config-modal">
+        <i class="fa fa-gear fa-2x"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="config-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="model-label-title">Configuration</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        </div>
+        <div class="modal-body custom-spacing">
+          <div id="save-message" style="display: none;" class="alert alert-success mt-3">
+            Settings saved successfully.
+          </div>
+          <div class="form-group-modal">
+            <label for="media_server_addresses">Media Server Addresses:</label>
+            <input type="text" class="form-control" id="media_server_addresses"
+              placeholder="Enter Media Server Address">
+          </div>
+          <div class="form-group-modal my-3">
+            <label for="media_server_tokens">Media Server Tokens:</label>
+            <input type="text" class="form-control" id="media_server_tokens" placeholder="Enter Media Server Tokens">
+          </div>
+          <div class="form-group-modal my-3">
+            <label for="plex_library_section_id">Plex Library Section ID:</label>
+            <input type="text" class="form-control" id="plex_library_section_id"
+              placeholder="Enter Plex Library Section ID">
+          </div>
+          <div class="form-group-modal my-3">
+            <label for="path_to_parent">Path to Parent Directory:</label>
+            <input type="text" class="form-control" id="path_to_parent" placeholder="Enter Path to Parent Directory">
+          </div>
+          <div class="form-group-modal">
+            <label for="path_to_playlists">Path to Playlist Directory:</label>
+            <input type="text" class="form-control" id="path_to_playlists"
+              placeholder="Enter Path to Playlist Directory">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="save-changes-button" class=" btn btn-primary">Save changes</button>
+          <i class="fa fa-sun"></i>
+          <div class="form-check form-switch">
+            <input class="form-check-input rounded" type="checkbox" id="themeSwitch">
+          </div>
+          <i class="fa fa-moon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid text-center p-3">
+    <div class="container justify-content-center mt-3">
+      <button id="generate_playlist" class="btn btn-primary btn-lg" type="button">
+        <span role="status">Generate Playlists</span>
+        <span id="generate_playlist_spinner" class="spinner-border-sm" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container-fluid text-center mt-3">
+    <div id="table_container">
+      <table id="playlistsTable" class="table table-responsive table-striped">
+        <thead class="sticky-top top-0">
+          <tr>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class="fixed-bottom text-center p-2" id="status_text">
+    </div>
+  </footer>
+  <script src="{{url_for('static',filename='script.js')}}"></script>
+</body>
+
+</html>

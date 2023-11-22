@@ -1,0 +1,18 @@
+#logo{
+    max-width: 45px;
+    max-height: 45px;
+    padding: 5px;
+}
+#table_container{
+        max-height: 65vh;
+        overflow-y: auto;
+}
+
+@media screen and (max-width: 600px) {
+    h1{
+        margin-bottom: 0.1rem!important;
+    }
+    #table_container{
+        max-height: 65vh;
+    }
+}
