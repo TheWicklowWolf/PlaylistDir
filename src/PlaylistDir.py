@@ -52,7 +52,7 @@ class Data_Handler:
                 logger.info(f"M3U playlist '{self.playlist_file}' imported successfully.")
                 return "Success"
             else:
-                logger.warning(f"Error importing M3U playlist '{self.playlist_file}'. Status Code:", response.status_code)
+                logger.warning(f"Error importing M3U playlist '{self.playlist_file}'. Status Code: {str(response.status_code)}")
                 logger.warning(f"Path for M3U playlist: {m3u_path}")
 
                 return "Failed to add to Plex"
