@@ -109,7 +109,7 @@ class Data_Handler:
                         continue
                 except Exception as e:
                     logger.error(f"Playlist Creation Failed: {str(e)}")
-                    overall_status = f"Playlist Creation Failed: {str(e)}"
+                    overall_status = f"Playlist Creation Failed: {type(e).__name__}"
                 else:
                     overall_status = "Playlists Generated"
                     if plex_update_req:
@@ -132,7 +132,7 @@ class Data_Handler:
 
         except Exception as e:
             logger.error(f"Playlist Creation Failed: {str(e)}")
-            overall_status = f"Playlist Creation Failed: {str(e)}"
+            overall_status = f"Playlist Creation Failed: {type(e).__name__}"
 
         finally:
             return {"Data": playlists, "Status": overall_status}
