@@ -5,7 +5,7 @@
 ![logo](src/static/playlistdir.png)
 
 
-Web GUI for making playlist out of files in a directory.
+Web GUI for making playlists from a directory.
 
 
 ## Run using docker-compose
