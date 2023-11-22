@@ -76,7 +76,7 @@ class Data_Handler:
                 self.plex_server_ip = self.media_servers.get("Plex")
                 self.x_plex_token = self.media_tokens.get("Plex")
                 plex_update_req = True
-                logger.info("Plex Token Found")
+                logger.info(f"Plex address-> {self.plex_server_ip} and Plex Token Found")
             else:
                 logger.warning("No Plex Info")
 
@@ -84,7 +84,7 @@ class Data_Handler:
                 self.jellyfin_token = self.media_tokens.get("Jellyfin")
                 self.jellyfin_address = self.media_servers.get("Jellyfin")
                 jellyfin_update_req = True
-                logger.info("Jellyfin Token Found")
+                logger.info(f"Plex address-> {self.jellyfin_address} and Jellyfin Token Found")
             else:
                 logger.warning("No Jellyfin Info")
 
