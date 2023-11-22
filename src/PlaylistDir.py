@@ -46,7 +46,7 @@ class Data_Handler:
     def add_playlist_to_plex(self, subfolder):
         try:
             m3u_path = os.path.join(self.path_to_playlists, subfolder + ".m3u")
-            url = f"http://{self.plex_server_ip}/playlists/upload?sectionID={self.plex_library_section_id}&path={m3u_path}&X-Plex-Token={self.x_plex_token}"
+            url = f"{self.plex_server_ip}/playlists/upload?sectionID={self.plex_library_section_id}&path={m3u_path}&X-Plex-Token={self.x_plex_token}"
             response = requests.post(url)
             if response.status_code == 200:
                 logger.info(f"M3U playlist '{self.playlist_file}' imported successfully.")
