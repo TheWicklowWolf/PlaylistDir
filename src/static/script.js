@@ -10,6 +10,42 @@ var generate_playlist = document.getElementById("generate_playlist");
 var generate_playlist_spinner = document.getElementById("generate_playlist_spinner");
 var generate_playlist_status = document.getElementById('status_text');
 
+function populatePlaylistTable(data) {
+    var tableBody = document.getElementById("playlistsTable").getElementsByTagName('tbody')[0];
+    var playlists = data.Data;
+    generate_playlist_status.innerText = data.Status;
+    tableBody.innerHTML = '';
+    playlists.forEach(function (playlist) {
+        var row = document.createElement('tr');
+        ['Name', 'Count', 'Status'].forEach(function (property) {
+            var cell = document.createElement('td');
+            cell.appendChild(document.createTextNode(playlist[property]));
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('/get_playlists', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            populatePlaylistTable(data);
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+});
 
 generate_playlist.addEventListener('click', function () {
     generate_playlist.disabled = true;
@@ -23,28 +59,15 @@ generate_playlist.addEventListener('click', function () {
     })
         .then(response => response.json())
         .then(data => {
-            var playlists = data.Data;
-            var tableBody = document.getElementById("playlistsTable").getElementsByTagName('tbody')[0];
-
-            tableBody.innerHTML = '';
-
-            playlists.forEach(function (playlist) {
-                var row = document.createElement('tr');
-                ['Name', 'Count', 'Status'].forEach(function (property) {
-                    var cell = document.createElement('td');
-                    cell.appendChild(document.createTextNode(playlist[property]));
-                    row.appendChild(cell);
-                });
-                tableBody.appendChild(row);
-            });
+            populatePlaylistTable(data);
             generate_playlist.disabled = false;
             generate_playlist_spinner.classList.remove('spinner-border');
-            generate_playlist_status.innerText = 'Status: ' + data.Status;
+            generate_playlist_status.innerText = data.Status;
         })
         .catch(error => {
             console.error('Error:', error);
             generate_playlist.disabled = false;
-            generate_playlist_status.innerText = 'Status: ' + error;
+            generate_playlist_status.innerText = error;
         });
 });
 

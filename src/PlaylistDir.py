@@ -11,8 +11,9 @@ class Data_Handler:
         self.plex_library_section_id = plex_library_section_id
         self.path_to_parent = path_to_parent
         self.path_to_playlists = path_to_playlists
-        self.playlists = "playlists"
-        self.parent = "parent"
+        self.folder_of_playlists = "playlists"
+        self.folder_of_parent = "parent"
+        self.playlists = []
 
     def convert_string_to_dictionary(self, raw_string):
         result = {}
@@ -64,7 +65,7 @@ class Data_Handler:
 
     def create_playlists(self):
         try:
-            playlists = []
+            self.playlists = []
             overall_status = "Start"
             self.media_servers = self.convert_string_to_dictionary(self.media_server_addresses)
             self.media_tokens = self.convert_string_to_dictionary(self.media_server_tokens)
@@ -89,27 +90,26 @@ class Data_Handler:
                 logger.warning("No Jellyfin Info")
 
             playlist_generated_flag = False
-            subfolders = [f for f in os.listdir(self.parent) if os.path.isdir(os.path.join(self.parent, f))]
+            subfolders = [f for f in os.listdir(self.folder_of_parent) if os.path.isdir(os.path.join(self.folder_of_parent, f))]
 
-            for subfolder in subfolders:
+            for subfolder in sorted(subfolders):
                 try:
-                    mp3_folder = os.path.join(self.parent, subfolder)
-                    mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith(".mp3")]
-                    file_creation_times = [(f, os.path.getctime(os.path.join(mp3_folder, f))) for f in mp3_files]
-                    file_creation_times.sort(key=lambda x: x[1], reverse=True)
-                    mp3_files = [file for file, _ in file_creation_times]
+                    mp3_folder = os.path.join(self.folder_of_parent, subfolder)
+                    mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
+                    mp3_files.sort()
 
-                    if mp3_files:
-                        self.playlist_file = os.path.join(self.playlists, f"{subfolder}.m3u")
-                        playlist_info = {"Name": subfolder, "Count": len(mp3_files), "Status": "Created m3u"}
-
-                        with open(self.playlist_file, "w") as file:
-                            playlist_generated_flag = True
-                            for mp3 in mp3_files:
-                                m3u = os.path.join(self.path_to_parent, subfolder, mp3)
-                                file.write(m3u + "\n")
-                    else:
+                    if not mp3_files:
                         continue
+
+                    self.playlist_file = os.path.join(self.folder_of_playlists, f"{subfolder}.m3u")
+                    playlist_info = {"Name": subfolder, "Count": len(mp3_files), "Status": "Created m3u"}
+
+                    with open(self.playlist_file, "w") as file:
+                        playlist_generated_flag = True
+                        for mp3 in mp3_files:
+                            m3u = os.path.join(self.path_to_parent, subfolder, mp3)
+                            file.write(m3u + "\n")
+
                 except Exception as e:
                     logger.error(f"Playlist Creation Failed: {str(e)}")
                     overall_status = f"Playlist Creation Failed: {type(e).__name__}"
@@ -122,15 +122,15 @@ class Data_Handler:
                         else:
                             playlist_info["Status"] += ", " + ret
 
-                    playlists.append(playlist_info)
+                    self.playlists.append(playlist_info)
 
             if subfolders and playlist_generated_flag and jellyfin_update_req:
                 ret = self.refresh_jellyfin()
                 if ret == "Success":
-                    for x in playlists:
+                    for x in self.playlists:
                         x["Status"] += ", Added to Jellyfin"
                 else:
-                    for x in playlists:
+                    for x in self.playlists:
                         x["Status"] += ", Failed to refresh Jellyfin"
 
         except Exception as e:
@@ -138,7 +138,7 @@ class Data_Handler:
             overall_status = f"Playlist Creation Failed: {type(e).__name__}"
 
         finally:
-            return {"Data": playlists, "Status": overall_status}
+            return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
         self.media_server_addresses = data["media_server_addresses"]
@@ -166,6 +166,11 @@ data_handler = Data_Handler(media_server_addresses, media_server_tokens, plex_li
 @app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("base.html")
+
+
+@app.route("/get_playlists", methods=["GET"])
+def get_playlists():
+    return {"Data": data_handler.playlists, "Status": ""}
 
 
 @app.route("/create_playlists", methods=["POST"])
