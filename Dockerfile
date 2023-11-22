@@ -1,7 +1,7 @@
 FROM python:3.12-alpine
 
-ARG UID=1001
-ARG GID=1001
+ARG UID=1000
+ARG GID=1000
 RUN addgroup -g $GID general_user && \
     adduser -D -u $UID -G general_user -s /bin/sh general_user
 
