@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 ARG UID=1001
 ARG GID=1001
