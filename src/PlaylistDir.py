@@ -162,7 +162,7 @@ class Data_Handler:
             return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
-        self.sync_start_times = data["sync_start_times"]
+        self.sync_start_times = [int(start_time.strip()) for start_time in data["sync_start_times"].split(",")]
         self.media_server_addresses = data["media_server_addresses"]
         self.media_server_tokens = data["media_server_tokens"]
         self.plex_library_section_id = data["plex_library_section_id"]
