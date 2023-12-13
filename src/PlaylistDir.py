@@ -1,4 +1,7 @@
 import os
+import time
+import datetime
+import threading
 import logging
 import requests
 from flask import Flask, render_template, request
@@ -14,6 +17,24 @@ class Data_Handler:
         self.folder_of_playlists = "playlists"
         self.folder_of_parent = "parent"
         self.playlists = []
+        self.sync_start_times = [10]
+        task_thread = threading.Thread(target=self.schedule_checker)
+        task_thread.daemon = True
+        task_thread.start()
+
+    def schedule_checker(self):
+        while True:
+            current_time = datetime.datetime.now().time()
+            within_sync_window = any(datetime.time(t, 0, 0) <= current_time <= datetime.time(t, 59, 59) for t in self.sync_start_times)
+
+            if within_sync_window:
+                logger.warning("Time to Generate Playlists")
+                raw_data = self.create_playlists()
+                logger.warning("Big sleep for 1 Hour - " + raw_data["Status"])
+                time.sleep(3600)
+            else:
+                logger.warning("Small sleep as not in a sync time window " + str(self.sync_start_times) + " - checking again in 600 seconds")
+                time.sleep(600)
 
     def convert_string_to_dictionary(self, raw_string):
         result = {}
@@ -96,7 +117,7 @@ class Data_Handler:
                 try:
                     mp3_folder = os.path.join(self.folder_of_parent, subfolder)
                     mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
-                    mp3_files.sort()
+                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=True)
 
                     if not mp3_files:
                         continue
@@ -141,6 +162,7 @@ class Data_Handler:
             return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
+        self.sync_start_times = data["sync_start_times"]
         self.media_server_addresses = data["media_server_addresses"]
         self.media_server_tokens = data["media_server_tokens"]
         self.plex_library_section_id = data["plex_library_section_id"]
@@ -194,6 +216,7 @@ def save_settings():
 @app.route("/load_settings", methods=["GET"])
 def load_settings():
     data = {
+        "sync_start_times": data_handler.sync_start_times,
         "media_server_addresses": data_handler.media_server_addresses,
         "media_server_tokens": data_handler.media_server_tokens,
         "plex_library_section_id": data_handler.plex_library_section_id,

@@ -1,6 +1,7 @@
 var config_modal = document.getElementById('config-modal');
 var save_message = document.getElementById("save-message");
 var save_changes_button = document.getElementById("save-changes-button");
+var sync_start_times = document.getElementById("sync_start_times");
 var media_server_addresses = document.getElementById("media_server_addresses");
 var media_server_tokens = document.getElementById("media_server_tokens");
 var plex_library_section_id = document.getElementById("plex_library_section_id");
@@ -85,6 +86,7 @@ config_modal.addEventListener('show.bs.modal', function (event) {
             return response.json();
         })
         .then(data => {
+            sync_start_times.value = data.sync_start_times.join(', ');
             media_server_addresses.value = data.media_server_addresses;
             media_server_tokens.value = data.media_server_tokens;
             plex_library_section_id.value = data.plex_library_section_id;
@@ -103,6 +105,7 @@ save_changes_button.addEventListener("click", () => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+            "sync_start_times": sync_start_times.value,
             "media_server_addresses": media_server_addresses.value,
             "media_server_tokens": media_server_tokens.value,
             "plex_library_section_id": plex_library_section_id.value,
