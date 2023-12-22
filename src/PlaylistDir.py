@@ -106,7 +106,7 @@ class Data_Handler:
                 self.jellyfin_token = self.media_tokens.get("Jellyfin")
                 self.jellyfin_address = self.media_servers.get("Jellyfin")
                 jellyfin_update_req = True
-                logger.info(f"Plex address-> {self.jellyfin_address} and Jellyfin Token Found")
+                logger.info(f"Jellyfin address-> {self.jellyfin_address} and Jellyfin Token Found")
             else:
                 logger.warning("No Jellyfin Info")
 
@@ -117,7 +117,8 @@ class Data_Handler:
                 try:
                     mp3_folder = os.path.join(self.folder_of_parent, subfolder)
                     mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
-                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=True)
+                    mp3_files.sort()
+                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=False)
 
                     if not mp3_files:
                         continue
