@@ -113,12 +113,12 @@ class Data_Handler:
             playlist_generated_flag = False
             subfolders = [f for f in os.listdir(self.folder_of_parent) if os.path.isdir(os.path.join(self.folder_of_parent, f))]
 
-            for subfolder in sorted(subfolders):
+            for subfolder in sorted(subfolders, key=lambda x: x.casefold()):
                 try:
                     mp3_folder = os.path.join(self.folder_of_parent, subfolder)
                     mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
-                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=True)
-                    mp3_files.sort(reverse=True)
+                    mp3_files.sort(key=lambda x: x.casefold())
+                    mp3_files.sort(key=lambda x: (x.casefold(), os.path.getmtime(os.path.join(mp3_folder, x))))
 
                     if not mp3_files:
                         continue
@@ -131,7 +131,6 @@ class Data_Handler:
                         for mp3 in mp3_files:
                             m3u = os.path.join(self.path_to_parent, subfolder, mp3)
                             file.write(m3u + "\n")
-                    logger.warning(f"Playlist Created: {subfolder}")
 
                 except Exception as e:
                     logger.error(f"Playlist Creation Failed: {str(e)}")
@@ -161,6 +160,7 @@ class Data_Handler:
             overall_status = f"Playlist Creation Failed: {type(e).__name__}"
 
         finally:
+            logger.warning(f"Status: {overall_status}")
             return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
