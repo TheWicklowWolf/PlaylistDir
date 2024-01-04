@@ -28,12 +28,12 @@ class Data_Handler:
             within_sync_window = any(datetime.time(t, 0, 0) <= current_time <= datetime.time(t, 59, 59) for t in self.sync_start_times)
 
             if within_sync_window:
-                logger.warning("Time to Generate Playlists")
+                logger.info("Time to Generate Playlists")
                 raw_data = self.create_playlists()
-                logger.warning("Big sleep for 1 Hour - " + raw_data["Status"])
+                logger.info("Big sleep for 1 Hour - " + raw_data["Status"])
                 time.sleep(3600)
             else:
-                logger.warning("Small sleep as not in a sync time window " + str(self.sync_start_times) + " - checking again in 600 seconds")
+                logger.info("Small sleep as not in a sync time window " + str(self.sync_start_times) + " - checking again in 600 seconds")
                 time.sleep(600)
 
     def convert_string_to_dictionary(self, raw_string):
@@ -59,7 +59,7 @@ class Data_Handler:
                 logger.info("Jellyfin Library refresh request successful.")
                 return "Success"
             else:
-                logger.warning(f"Jellyfin Error: {response.status_code}, {response.text}")
+                logger.error(f"Jellyfin Error: {response.status_code}, {response.text}")
                 return "Failed to Refresh Jellyfin"
         except Exception as e:
             logger.error(f"Jellyfin Library scan failed: {str(e)}")
@@ -74,7 +74,7 @@ class Data_Handler:
                 logger.info(f"M3U playlist '{self.playlist_file}' imported successfully.")
                 return "Success"
             else:
-                logger.warning(f"Error importing M3U playlist '{self.playlist_file}'. Status Code: {str(response.status_code)}")
+                logger.error(f"Error importing M3U playlist '{self.playlist_file}'. Status Code: {str(response.status_code)}")
                 logger.warning(f"Path for M3U playlist: {m3u_path}")
 
                 return "Failed to add to Plex"
@@ -87,7 +87,7 @@ class Data_Handler:
     def create_playlists(self):
         try:
             self.playlists = []
-            overall_status = "Start"
+            overall_status = "Starting "
             self.media_servers = self.convert_string_to_dictionary(self.media_server_addresses)
             self.media_tokens = self.convert_string_to_dictionary(self.media_server_tokens)
             logger.info("Media Servers: " + str(self.media_servers))
@@ -118,7 +118,7 @@ class Data_Handler:
                     mp3_folder = os.path.join(self.folder_of_parent, subfolder)
                     mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
                     mp3_files.sort(key=lambda x: x.casefold())
-                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=False)
+                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=True)
 
                     if not mp3_files:
                         continue
@@ -160,7 +160,7 @@ class Data_Handler:
             overall_status = f"Playlist Creation Failed: {type(e).__name__}"
 
         finally:
-            logger.warning(f"Status: {overall_status}")
+            logger.info(f"Status - {overall_status}")
             return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
