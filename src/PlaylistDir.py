@@ -118,7 +118,7 @@ class Data_Handler:
                     mp3_folder = os.path.join(self.folder_of_parent, subfolder)
                     mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
                     mp3_files.sort()
-                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=False)
+                    mp3_files.sort(key=lambda x: os.path.getmtime(os.path.join(mp3_folder, x)), reverse=True)
 
                     if not mp3_files:
                         continue
@@ -131,6 +131,7 @@ class Data_Handler:
                         for mp3 in mp3_files:
                             m3u = os.path.join(self.path_to_parent, subfolder, mp3)
                             file.write(m3u + "\n")
+                    logger.warning(f"Playlist Created: {subfolder}")
 
                 except Exception as e:
                     logger.error(f"Playlist Creation Failed: {str(e)}")
