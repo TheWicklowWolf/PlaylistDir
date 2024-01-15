@@ -32,8 +32,9 @@ class Data_Handler:
                 raw_data = self.create_playlists()
                 logger.info("Big sleep for 1 Hour - " + raw_data["Status"])
                 time.sleep(3600)
+                logger.warning("Checking every 60 seconds as not in sync time window " + str(self.sync_start_times))
+
             else:
-                logger.info("Small sleep as not in a sync time window " + str(self.sync_start_times) + " - checking again in 600 seconds")
                 time.sleep(600)
 
     def convert_string_to_dictionary(self, raw_string):
