@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/playlistdir.png" alt="logo">
 
 
-Web GUI for making playlists from a directory of mp3s.
+Web GUI for making playlists from a directory of mp3's.
 
 
 ## Run using docker-compose
