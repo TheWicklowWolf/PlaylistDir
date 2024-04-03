@@ -1,11 +1,10 @@
 ![Build Status](https://github.com/TheWicklowWolf/PlaylistDir/actions/workflows/main.yml/badge.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/thewicklowwolf/playlistdir.svg)
 
+<img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/playlistdir.png" alt="logo">
 
-![logo](src/static/playlistdir.png)
 
-
-Web GUI for making playlists from a directory.
+Web GUI for making playlists from a directory of mp3s.
 
 
 ## Run using docker-compose
@@ -32,11 +31,11 @@ services:
 
 ---
 
-![image](https://github.com/TheWicklowWolf/PlaylistDir/assets/111055425/1fff3b0c-6eb1-4176-a383-c72797ea83c7)
+<img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/light.png" alt="light">
 
 ---
 
-![image](https://github.com/TheWicklowWolf/PlaylistDir/assets/111055425/cfc20676-0785-4617-ade5-d54c92fa226d)
+<img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/dark.png" alt="dark">
 
 ---
 
