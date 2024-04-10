@@ -10,7 +10,6 @@ Web GUI for making playlists from a directory of mp3's.
 ## Run using docker-compose
 
 ```yaml
-version: "2.1"
 services:
   playlistdir:
     image: thewicklowwolf/playlistdir:latest
