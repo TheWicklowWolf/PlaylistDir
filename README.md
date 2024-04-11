@@ -25,6 +25,7 @@ services:
     volumes:
       - /path/to/parent:/playlistdir/parent:ro
       - /path/to/playlists:/playlistdir/playlists
+      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
 ```
 
