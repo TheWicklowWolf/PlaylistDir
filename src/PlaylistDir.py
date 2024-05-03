@@ -17,7 +17,7 @@ class Data_Handler:
         self.folder_of_playlists = "playlists"
         self.folder_of_parent = "parent"
         self.playlists = []
-        self.sync_start_times = [10]
+        self.sync_start_times = [3]
         task_thread = threading.Thread(target=self.schedule_checker)
         task_thread.daemon = True
         task_thread.start()
