@@ -35,7 +35,7 @@ Certain values can be set via environment variables:
 
 * __media_server_addresses__: Addresses for media servers, remove where not needed. Format: `Plex:http://192.168.1.2:32400, Jellyfin:http://192.168.1.2:8096`.
 * __media_server_tokens__: The API keys for media servers, remove where not needed. Format: `Plex: abc, Jellyfin: xyz`.
-* __plex_library_section_id__: Library section ID for Plex. Defaults to ` `.
+* __plex_library_section_id__: Library section ID for Plex. Defaults to `0`.
 * __path_to_parent__:  Raw path to the parent directory. Defaults to ` `.
 * __path_to_playlists__: Raw path to the playlists directory. Defaults to ` `.
 * __sync_schedule__: Schedule hours to run. Defaults to ` `
