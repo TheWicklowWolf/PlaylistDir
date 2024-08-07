@@ -8,21 +8,34 @@ from flask import Flask, render_template, request
 
 
 class Data_Handler:
-    def __init__(self, media_server_addresses, media_server_tokens, plex_library_section_id, path_to_parent, path_to_playlists):
-        self.media_server_addresses = media_server_addresses
-        self.media_server_tokens = media_server_tokens
-        self.plex_library_section_id = plex_library_section_id
-        self.path_to_parent = path_to_parent
-        self.path_to_playlists = path_to_playlists
+    def __init__(self):
+        self.media_server_addresses = os.environ.get("media_server_addresses", "Plex: http://192.168.1.2:32400, Jellyfin: http://192.168.1.2:8096")
+        self.media_server_tokens = os.environ.get("media_server_tokens", "Plex: abc, Jellyfin: xyz")
+        self.plex_library_section_id = os.environ.get("plex_library_section_id", "0")
+        self.path_to_parent = os.environ.get("path_to_parent", "")
+        self.path_to_playlists = os.environ.get("path_to_playlists", "")
         self.folder_of_playlists = "playlists"
         self.folder_of_parent = "parent"
         self.playlists = []
-        self.sync_start_times = [3]
+        sync_hours_str = os.environ.get("sync_schedule", "")
+
+        try:
+            sync_hours = [int(x) for x in sync_hours_str.split(",")]
+            self.sync_start_times = sorted(list(set(sync_hours)))
+
+        except Exception as e:
+            logger.error(f"Error Updating schedule: {str(e)}")
+            logger.error(f"Setting it to 12am")
+            self.sync_start_times = [0]
+
         task_thread = threading.Thread(target=self.schedule_checker)
         task_thread.daemon = True
         task_thread.start()
 
     def schedule_checker(self):
+        logger.info("Starting periodic checks every 10 minutes to monitor sync start times.")
+        logger.info(f"Current scheduled hours to start sync (in 24-hour format): {self.sync_start_times}")
+
         while True:
             current_time = datetime.datetime.now().time()
             within_sync_window = any(datetime.time(t, 0, 0) <= current_time <= datetime.time(t, 59, 59) for t in self.sync_start_times)
@@ -32,7 +45,7 @@ class Data_Handler:
                 raw_data = self.create_playlists()
                 logger.info("Big sleep for 1 Hour - " + raw_data["Status"])
                 time.sleep(3600)
-                logger.warning("Checking every 60 seconds as not in sync time window " + str(self.sync_start_times))
+                logger.warning("Checking every 10 minutes as not in sync time window " + str(self.sync_start_times))
 
             else:
                 time.sleep(600)
@@ -184,13 +197,8 @@ logger.warning(f"{'*' * 50}\n")
 logger.warning(f"{app_name_text} Version: {release_version}\n")
 logger.warning(f"{'*' * 50}")
 
-media_server_addresses = os.environ.get("media_server_addresses", "Plex: http://192.168.1.2:32400, Jellyfin: http://192.168.1.2:8096")
-media_server_tokens = os.environ.get("media_server_tokens", "Plex: abc, Jellyfin: xyz")
-plex_library_section_id = os.environ.get("plex_library_section_id", "0")
-path_to_parent = os.environ.get("path_to_parent", "")
-path_to_playlists = os.environ.get("path_to_playlists", "")
 
-data_handler = Data_Handler(media_server_addresses, media_server_tokens, plex_library_section_id, path_to_parent, path_to_playlists)
+data_handler = Data_Handler()
 
 
 @app.route("/", methods=["GET", "POST"])
