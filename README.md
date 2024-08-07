@@ -20,6 +20,7 @@ services:
       - plex_library_section_id=0
       - path_to_parent=/path/to/parent
       - path_to_playlists=/path/to/playlists
+      - sync_schedule=3
     ports:
       - 5000:5000
     volumes:
