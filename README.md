@@ -29,6 +29,24 @@ services:
     restart: unless-stopped
 ```
 
+## Configuration via environment variables
+
+Certain values can be set via environment variables:
+
+* __media_server_addresses__: Addresses for media servers. Remove as not needed. Format: `Plex:http://192.168.1.2:32400, Jellyfin:http://192.168.1.2:8096`.
+* __media_server_tokens__: The API keys for media servers. Format: `Plex: abc, Jellyfin: xyz`.
+* __plex_library_section_id__: Library section ID for Plex. Defaults to ` `.
+* __path_to_parent__:  Actual path on the server to the parent directory. Defaults to ` `.
+* __path_to_playlists__: Actual path on the server to the playlists directory. Defaults to ` `.
+* __sync_schedule__: Schedule hours to run. Defaults to ` `
+
+
+## Sync Schedule
+
+Use a comma-separated list of hours to start sync (e.g. `2, 20` will initiate a sync at 2 AM and 8 PM).
+> Note: There is a deadband of up to 10 minutes from the scheduled start time.
+
+
 ---
 
 <img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/light.png" alt="light">
