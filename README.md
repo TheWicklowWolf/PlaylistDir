@@ -47,6 +47,35 @@ Use a comma-separated list of hours to start sync (e.g. `2, 20` will initiate a 
 > Note: There is a deadband of up to 10 minutes from the scheduled start time.
 
 
+# Example Folder Structure
+
+
+```
+/data/media/music/singles
+├── playlists
+│   ├── playlist1.m3u
+│   ├── playlist2.m3u
+│   └── ...
+├── playlist1
+│   ├── song_a.mp3
+│   └── song_b.mp3
+├── playlist2
+│   ├── song_x.mp3
+│   └── song_y.mp3
+└── ...
+
+```
+
+### Explanation
+
+- **/data/media/music/singles**: This is the parent directory containing your sub-folders. It is mapped to `/playlistdir/parent` in the container and should contain all your sub-folders.  
+Set environmental variable: **path_to_parent=/data/media/music/singles**
+
+
+
+- **/data/media/music/singles/playlists**: This directory contains your playlist files. It is mapped to `/playlistdir/playlists` in the container and will contain all your `.m3u` playlist files.  
+Set environmental variable: **path_to_playlists=/data/media/music/singles/playlists**
+
 ---
 
 <img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/light.png" alt="light">
