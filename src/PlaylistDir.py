@@ -14,14 +14,17 @@ class Data_Handler:
         self.plex_library_section_id = os.environ.get("plex_library_section_id", "0")
         self.path_to_parent = os.environ.get("path_to_parent", "")
         self.path_to_playlists = os.environ.get("path_to_playlists", "")
+        sync_hours_str = os.environ.get("sync_schedule", "")
+
         self.folder_of_playlists = "playlists"
         self.folder_of_parent = "parent"
         self.playlists = []
-        sync_hours_str = os.environ.get("sync_schedule", "")
+        self.sync_start_times = []
 
         try:
-            sync_hours = [int(x) for x in sync_hours_str.split(",")]
-            self.sync_start_times = sorted(list(set(sync_hours)))
+            if sync_hours_str:
+                sync_hours = [int(x) for x in sync_hours_str.split(",")]
+                self.sync_start_times = sorted(list(set(sync_hours)))
 
         except Exception as e:
             logger.error(f"Error Updating schedule: {str(e)}")
