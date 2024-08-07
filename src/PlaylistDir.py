@@ -132,20 +132,20 @@ class Data_Handler:
 
             for subfolder in sorted(subfolders, key=lambda x: x.casefold()):
                 try:
-                    mp3_folder = os.path.join(self.folder_of_parent, subfolder)
-                    mp3_files = [f for f in os.listdir(mp3_folder) if f.endswith((".mp3", ".flac", ".aac", ".wav"))]
-                    mp3_files.sort(key=lambda x: x.casefold())
+                    folder_with_music_files = os.path.join(self.folder_of_parent, subfolder)
+                    music_files = [f for f in os.listdir(folder_with_music_files) if f.endswith((".mp3", ".flac", ".m4a", ".aac", ".wav"))]
+                    music_files.sort(key=lambda x: x.casefold())
 
-                    if not mp3_files:
+                    if not music_files:
                         continue
 
                     self.playlist_file = os.path.join(self.folder_of_playlists, f"{subfolder}.m3u")
-                    playlist_info = {"Name": subfolder, "Count": len(mp3_files), "Status": "Created m3u"}
+                    playlist_info = {"Name": subfolder, "Count": len(music_files), "Status": "Created m3u"}
 
                     with open(self.playlist_file, "w") as file:
                         playlist_generated_flag = True
-                        for mp3 in mp3_files:
-                            m3u = os.path.join(self.path_to_parent, subfolder, mp3)
+                        for music_item in music_files:
+                            m3u = os.path.join(self.path_to_parent, subfolder, music_item)
                             file.write(m3u + "\n")
 
                 except Exception as e:
