@@ -178,6 +178,12 @@ app.secret_key = "any_secret_key"
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger()
 
+app_name_text = os.path.basename(__file__).replace(".py", "")
+release_version = os.environ.get("RELEASE_VERSION", "unknown")
+logger.warning(f"{'*' * 50}\n")
+logger.warning(f"{app_name_text} Version: {release_version}\n")
+logger.warning(f"{'*' * 50}")
+
 media_server_addresses = os.environ.get("media_server_addresses", "Plex: http://192.168.1.2:32400, Jellyfin: http://192.168.1.2:8096")
 media_server_tokens = os.environ.get("media_server_tokens", "Plex: abc, Jellyfin: xyz")
 plex_library_section_id = os.environ.get("plex_library_section_id", "0")
