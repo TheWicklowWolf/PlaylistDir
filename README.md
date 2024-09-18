@@ -40,7 +40,7 @@ Certain values can be set via environment variables:
 * __path_to_parent__:  Raw path to the parent directory. Defaults to ` `.
 * __path_to_playlists__: Raw path to the playlists directory. Defaults to ` `.
 * __sync_schedule__: Schedule hours to run. Defaults to ` `
-* __playlist_sorting_method__: Sorting method, options are `modified` (by date) or `alphabetically`. Defaults to `alphabetically`.
+* __playlist_sorting_method__: Sorting method, options are `modified` (sort by the modified timestamp of the files, with latest files at the top) or `alphabetically`. Defaults to `alphabetically`.
 
 
 ## Sync Schedule
