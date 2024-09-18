@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/TheWicklowWolf/PlaylistDir/main/src/static/playlistdir.png" alt="logo">
 
 
-Web GUI for making playlists from a directory of mp3's.
+Make playlists from a directory of audio files.
 
 
 ## Run using docker-compose
@@ -40,6 +40,7 @@ Certain values can be set via environment variables:
 * __path_to_parent__:  Raw path to the parent directory. Defaults to ` `.
 * __path_to_playlists__: Raw path to the playlists directory. Defaults to ` `.
 * __sync_schedule__: Schedule hours to run. Defaults to ` `
+* __playlist_sorting_method__: Sorting method, options are `modified` (by date) or `alphabetically`. Defaults to `alphabetically`.
 
 
 ## Sync Schedule

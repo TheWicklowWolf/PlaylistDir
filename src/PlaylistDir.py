@@ -15,9 +15,10 @@ class Data_Handler:
         self.path_to_parent = os.environ.get("path_to_parent", "")
         self.path_to_playlists = os.environ.get("path_to_playlists", "")
         sync_hours_str = os.environ.get("sync_schedule", "")
+        self.playlist_sorting_method = os.environ.get("playlist_sorting_method", "alphabetically")
 
-        self.folder_of_playlists = "playlists"
-        self.folder_of_parent = "parent"
+        self.playlist_folder = "playlists"
+        self.parent_folder = "parent"
         self.playlists = []
         self.sync_start_times = []
 
@@ -78,6 +79,7 @@ class Data_Handler:
             else:
                 logger.error(f"Jellyfin Error: {response.status_code}, {response.text}")
                 return "Failed to Refresh Jellyfin"
+
         except Exception as e:
             logger.error(f"Jellyfin Library scan failed: {str(e)}")
             return "Error Refreshing Jellyfin"
@@ -93,8 +95,8 @@ class Data_Handler:
             else:
                 logger.error(f"Error importing M3U playlist '{self.playlist_file}'. Status Code: {str(response.status_code)}")
                 logger.warning(f"Path for M3U playlist: {m3u_path}")
-
                 return "Failed to add to Plex"
+
         except Exception as e:
             logger.error(f"Error importing M3U playlist '{self.playlist_file}'")
             logger.warning(f"Path for M3U playlist: {m3u_path}")
@@ -104,7 +106,7 @@ class Data_Handler:
     def create_playlists(self):
         try:
             self.playlists = []
-            overall_status = "Starting "
+            overall_status = "Starting"
             self.media_servers = self.convert_string_to_dictionary(self.media_server_addresses)
             self.media_tokens = self.convert_string_to_dictionary(self.media_server_tokens)
             logger.info("Media Servers: " + str(self.media_servers))
@@ -119,7 +121,7 @@ class Data_Handler:
             else:
                 logger.warning("No Plex Info")
 
-            if "Jellyfin" in self.media_tokens and "Jellyfin" in self.media_tokens:
+            if "Jellyfin" in self.media_servers and "Jellyfin" in self.media_tokens:
                 self.jellyfin_token = self.media_tokens.get("Jellyfin")
                 self.jellyfin_address = self.media_servers.get("Jellyfin")
                 jellyfin_update_req = True
@@ -128,18 +130,37 @@ class Data_Handler:
                 logger.warning("No Jellyfin Info")
 
             playlist_generated_flag = False
-            subfolders = [f for f in os.listdir(self.folder_of_parent) if os.path.isdir(os.path.join(self.folder_of_parent, f))]
 
-            for subfolder in sorted(subfolders, key=lambda x: x.casefold()):
+            if not os.path.exists(self.parent_folder):
+                overall_status = "Folder Doesn't Exist"
+                logger.info(f"Folder Doesn't Exist - Check Mounted Volumes")
+                return
+
+            subfolders = [f for f in os.listdir(self.parent_folder) if os.path.isdir(os.path.join(self.parent_folder, f))]
+
+            if not subfolders:
+                overall_status = "Parent Folder Empty"
+                logger.info(f"Parent Folder Empty")
+                return
+
+            sorted_subfolders = sorted(subfolders, key=lambda x: x.casefold())
+            logger.info(f"Folder Count: {len(sorted_subfolders)}")
+
+            for subfolder in sorted_subfolders:
                 try:
-                    folder_with_music_files = os.path.join(self.folder_of_parent, subfolder)
+                    folder_with_music_files = os.path.join(self.parent_folder, subfolder)
                     music_files = [f for f in os.listdir(folder_with_music_files) if f.endswith((".mp3", ".flac", ".m4a", ".aac", ".wav"))]
-                    music_files.sort(key=lambda x: x.casefold())
+                    logger.info(f"Music File Count: {len(music_files)} in Sub-Folder: {subfolder}")
+
+                    if self.playlist_sorting_method == "modified":
+                        music_files.sort(key=lambda x: os.path.getmtime(os.path.join(folder_with_music_files, x)), reverse=True)
+                    else:
+                        music_files.sort(key=lambda x: x.casefold())
 
                     if not music_files:
                         continue
 
-                    self.playlist_file = os.path.join(self.folder_of_playlists, f"{subfolder}.m3u")
+                    self.playlist_file = os.path.join(self.playlist_folder, f"{subfolder}.m3u")
                     playlist_info = {"Name": subfolder, "Count": len(music_files), "Status": "Created m3u"}
 
                     with open(self.playlist_file, "w") as file:
@@ -151,6 +172,7 @@ class Data_Handler:
                 except Exception as e:
                     logger.error(f"Playlist Creation Failed: {str(e)}")
                     overall_status = f"Playlist Creation Failed: {type(e).__name__}"
+
                 else:
                     overall_status = "Playlists Generated"
                     if plex_update_req:
@@ -180,7 +202,8 @@ class Data_Handler:
             return {"Data": self.playlists, "Status": overall_status}
 
     def save_settings(self, data):
-        self.sync_start_times = [int(start_time.strip()) for start_time in data["sync_start_times"].split(",")]
+        if data["sync_start_times"]:
+            self.sync_start_times = [int(start_time.strip()) for start_time in data["sync_start_times"].split(",")]
         self.media_server_addresses = data["media_server_addresses"]
         self.media_server_tokens = data["media_server_tokens"]
         self.plex_library_section_id = data["plex_library_section_id"]
