@@ -40,7 +40,7 @@ echo "-----------------"
 # Create the required directories with the correct permissions
 echo "Setting up directories.."
 mkdir -p /playlistdir/parent /playlistdir/playlists
-chown -R ${PUID}:${PGID} /playlistdir
+chown -R ${PUID}:${PGID} /playlistdir/playlists
 
 # Start the application with the specified user permissions
 echo "Running PlaylistDir..."
