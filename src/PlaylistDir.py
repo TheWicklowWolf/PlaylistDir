@@ -154,6 +154,8 @@ class Data_Handler:
 
                     if self.playlist_sorting_method == "modified":
                         music_files.sort(key=lambda x: os.path.getmtime(os.path.join(folder_with_music_files, x)), reverse=True)
+                    elif self.playlist_sorting_method == "modified-ascending":
+                        music_files.sort(key=lambda x: os.path.getmtime(os.path.join(folder_with_music_files, x)))
                     else:
                         music_files.sort(key=lambda x: x.casefold())
 
