@@ -157,7 +157,7 @@ class Data_Handler:
             for subfolder in sorted_subfolders:
                 try:
                     folder_with_music_files = os.path.join(self.parent_folder, subfolder)
-                    music_files = [f for f in os.listdir(folder_with_music_files) if f.endswith((".mp3", ".flac", ".m4a", ".aac", ".wav"))]
+                    music_files = [f for f in os.listdir(folder_with_music_files) if f.endswith((".mp3", ".flac", ".m4a", ".aac", ".wav", ".opus"))]
                     logger.info(f"Music File Count: {len(music_files)} in Sub-Folder: {subfolder}")
 
                     if self.playlist_sorting_method == "modified":
