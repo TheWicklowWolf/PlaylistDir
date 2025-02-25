@@ -16,7 +16,7 @@ class Data_Handler:
         self.path_to_playlists = os.environ.get("path_to_playlists", "")
         sync_hours_str = os.environ.get("sync_schedule", "")
         self.playlist_sorting_method = os.environ.get("playlist_sorting_method", "alphabetically")
-        self.include_subdir = os.environ.get("include_subdir", "no")
+        self.include_subfolders = os.environ.get("include_subfolders", "False").lower()
 
         self.playlist_folder = "playlists"
         self.parent_folder = "parent"
@@ -137,12 +137,8 @@ class Data_Handler:
                 logger.info(f"Folder Doesn't Exist - Check Mounted Volumes")
                 return
 
-            if self.include_subdir == "yes":
-                subfolders = [
-                    os.path.relpath(os.path.join(root, d), self.parent_folder)
-                    for root, dirs, _ in os.walk(self.parent_folder)
-                    for d in dirs
-                ]
+            if self.include_subfolders == "true":
+                subfolders = [os.path.relpath(os.path.join(root, d), self.parent_folder) for root, dirs, _ in os.walk(self.parent_folder) for d in dirs]
             else:
                 subfolders = [f for f in os.listdir(self.parent_folder) if os.path.isdir(os.path.join(self.parent_folder, f))]
 
@@ -169,12 +165,12 @@ class Data_Handler:
 
                     if not music_files:
                         continue
-                    
-                    if self.include_subdir == "yes":
+
+                    if self.include_subfolders == "true":
                         self.playlist_file = os.path.join(self.playlist_folder, f"{subfolder.split('/')[-1]}.m3u")
                     else:
                         self.playlist_file = os.path.join(self.playlist_folder, f"{subfolder}.m3u")
-                    
+
                     playlist_info = {"Name": subfolder, "Count": len(music_files), "Status": "Created m3u"}
 
                     with open(self.playlist_file, "w") as file:
@@ -190,8 +186,8 @@ class Data_Handler:
                 else:
                     overall_status = "Playlists Generated"
                     if plex_update_req:
-                        if self.include_subdir == "yes":
-                            ret = self.add_playlist_to_plex(subfolder.split('/')[-1])
+                        if self.include_subfolders == "true":
+                            ret = self.add_playlist_to_plex(subfolder.split("/")[-1])
                         else:
                             ret = self.add_playlist_to_plex(subfolder)
 

@@ -43,7 +43,7 @@ Certain values can be set via environment variables:
 * __path_to_playlists__: Raw path to the playlists directory. Defaults to ` `.
 * __sync_schedule__: Schedule hours to run. Defaults to ` `
 * __playlist_sorting_method__: Sorting method, options are `modified` (sort by the modified timestamp of the files in decending order with latest files at the top, `modified-ascending` with latest files at the bottom) or `alphabetically`. Defaults to `alphabetically`.
-* __include_subfolder__: Include subfolders in search for music files, set to `yes`, defaults to `no`.
+* __include_subfolders__: Include subfolders in search for music files. Defaults to `False`.
 
 ## Sync Schedule
 
